@@ -1,0 +1,23 @@
+{
+  "name": "sdmpr",
+  "version": "1.0.0",
+  "description": "Simple Data Mapper",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bc238dev/sdmpr.git"
+  },
+  "keywords": [
+    "data",
+    "mapper"
+  ],
+  "author": "bc238dev",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bc238dev/sdmpr/issues"
+  },
+  "homepage": "https://github.com/bc238dev/sdmpr#readme"
+}
