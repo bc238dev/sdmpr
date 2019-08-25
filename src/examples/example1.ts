@@ -3,7 +3,7 @@ import { SimpleDataMapper } from "../SimpleDataMapper"
 const mapper1 = SimpleDataMapper.create()
   .map("first_name", "firstName")
   .map("last_name", "lastName")
-  .map("ages")
+  .map("age")
 
 const data1 = { first_name: "Evo", last_name: "Zumo", age: 16 }
 const data2 = mapper1.transform(data1)
