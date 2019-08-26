@@ -17,7 +17,7 @@ const data1 = {
 };
 const mapper1 = SimpleDataMapper_1.SimpleDataMapper.create()
     .map("first_name", "person.firstName")
-    .map("last_name", "person.lastName")
+    .map("last_name", "person.lastName", (lastName) => lastName && lastName.toUpperCase())
     .map("age", "person.age")
     .map("addresses[0].city_name", "person.address.city")
     .map("addresses[0].postal_code", "person.address.zip");

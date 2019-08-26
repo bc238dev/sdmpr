@@ -3,8 +3,9 @@
 This is a simple data mapper...
 
 
-### Here is the first example:
+## Here are some examples:
 
+**Example1:** Simple one to one transformation
 ```ts
 
 import { SimpleDataMapper } from "../SimpleDataMapper"
@@ -74,6 +75,50 @@ TransformedData1-> {
     "city_name": "San Diego",
     "state_name": "CA",
     "postal_code": "92120"
+  }
+}
+```
+
+---
+
+**Example2:** Callback demo and nested fields in the output.
+
+```ts
+const data1 = {
+  first_name: "Pixie", last_name: "Dorry", age: 3, gender: "F",
+  addresses: [
+    {
+      street: "123 Str",
+      city_name: "San Diego",
+      state_name: "CA",
+      postal_code: "92120"
+    }
+  ]
+}
+const mapper1 = SimpleDataMapper.create()
+  .map("first_name", "person.firstName")
+  .map("last_name", "person.lastName", (lastName: string) => lastName && lastName.toUpperCase())
+  .map("age", "person.age")
+  .map("addresses[0].city_name", "person.address.city")
+  .map("addresses[0].postal_code", "person.address.zip")
+
+const transformedData1 = mapper1.transform(data1)
+
+log("TransformedData1->", transformedData1)
+
+```
+
+Output:
+```
+TransformedData1-> {
+  "person": {
+    "firstName": "Pixie",
+    "lastName": "DORRY",
+    "age": 3,
+    "address": {
+      "city": "San Diego",
+      "zip": "92120"
+    }
   }
 }
 ```
