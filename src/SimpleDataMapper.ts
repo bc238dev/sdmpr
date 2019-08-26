@@ -26,11 +26,22 @@ export class SimpleDataMapper {
     const transformed = [];
     const skipped = [];
 
-    const getNestedData = (nestedData: any) => {
+    const getNestedData = (nestedData: string) => {
       const paths = nestedData.split(".")
       let currentData = { ...srcData }
-      paths.forEach((p: any) => {
-        currentData = currentData && currentData[p]
+      paths.forEach((p: string) => {
+        if (currentData) {
+          // If we have array notation (somearray[n]) then capture groups
+          const matches = p.match(/(.*)\[(.*)\]/)
+          if (matches) {
+            const g1 = matches[1]
+            const g2 = matches[2]
+            currentData = currentData[g1] ? currentData[g1][g2] : undefined
+          }
+          else {
+            currentData = currentData[p]
+          }
+        }
       })
       return currentData
     }
