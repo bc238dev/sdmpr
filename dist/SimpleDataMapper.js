@@ -45,7 +45,15 @@ class SimpleDataMapper {
         maps.forEach(({ from, to, cb }) => {
             const nestedData = getNestedData(from);
             if (nestedData) {
-                transformedData[to] = cb ? cb(nestedData) : nestedData;
+                let target = transformedData;
+                const fieldNames = to.split(".");
+                const lastFieldName = fieldNames[fieldNames.length - 1];
+                for (let i = 0; i < fieldNames.length - 1; i++) {
+                    const fieldName = fieldNames[i];
+                    target[fieldName] = target[fieldName] ? target[fieldName] : {};
+                    target = target[fieldName];
+                }
+                target[lastFieldName] = cb ? cb(nestedData) : nestedData;
                 transformed.push(`${from} -> ${to}`);
             }
             else {
