@@ -59,7 +59,7 @@ log("TransformedData1->", transformedData1)
 ```
 
 Sample Output:
-```
+```json
 Data1-> {
   "first_name": "Evo",
   "last_name": "Zumo",
@@ -123,7 +123,7 @@ log("TransformedData1->", transformedData1)
 ```
 
 Sample Output:
-```
+```json
 TransformedData1-> {
   "person": {
     "firstName": "Pixie",
@@ -156,7 +156,7 @@ const mapper1 = SimpleDataMapper.create()
 ```
 
 Sample Output:
-```
+```json
 TransformedData1-> {
   "fullName1": "Pixie Dorry",
   "fullName2": "Pixie DORRY",
@@ -177,7 +177,7 @@ const mapper1 = SimpleDataMapper.create(true)
 ```
 
 Sample Output:
-```
+```json
 TransformedData1-> {
   "firstName": "Pixie",
   "age": 3,
