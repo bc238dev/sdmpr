@@ -2,13 +2,28 @@
 
 Transform any data easily from one shape to another.
 
+## Installation
+
+`$ npm i sdmpr`
+
+## Usage
+
+```js
+Common JS
+const { SimpleDataMapper } = require("sdmpr")
+
+or
+
+TS
+import { SimpleDataMapper } from "sdmpr"
+
+```
+
 ## Here are some examples:
 
 **Example 1:** Simple one to one transformation
 
 ```ts
-import { SimpleDataMapper } from "../SimpleDataMapper"
-
 const data1 = {
   first_name: "Evo", last_name: "Zumo", age: 16, gender: "M",
   addresses: [
