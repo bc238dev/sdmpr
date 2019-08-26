@@ -17,7 +17,7 @@ const data1 = {
 }
 const mapper1 = SimpleDataMapper.create()
   .collect(["first_name", "last_name"], "fullName1")
-  .collect(["first_name", "last_name"], (data: any) => {
+  .collect(["first_name", "last_name"], (data: any[]) => {
     // You have full control here!
     return {
       fullName2: `${data[0]} ${data[1] && data[1].toUpperCase()}`,

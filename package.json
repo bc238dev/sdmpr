@@ -1,6 +1,6 @@
 {
   "name": "sdmpr",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Simple Data Mapper",
   "main": "./dist/SimpleDataMapper.js",
   "scripts": {
