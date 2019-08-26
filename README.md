@@ -9,12 +9,6 @@ Transform any data easily from one shape to another.
 ```ts
 import { SimpleDataMapper } from "../SimpleDataMapper"
 
-const mapper1 = SimpleDataMapper.create()
-  .map("first_name", "firstName")
-  .map("last_name", "lastName")
-  .map("age")
-  .map("addresses[0]", "firstAddress")
-
 const data1 = {
   first_name: "Evo", last_name: "Zumo", age: 16, gender: "M",
   addresses: [
@@ -33,7 +27,12 @@ const data1 = {
   ]
 }
 
-const transformedData1 = mapper1.transform(data1)
+const transformedData1 = SimpleDataMapper.create()
+  .map("first_name", "firstName")
+  .map("last_name", "lastName")
+  .map("age")
+  .map("addresses[0]", "firstAddress")
+  .transform(data1)
 
 const log = (msg: string, obj: any) => {
   console.log(msg, JSON.stringify(obj, null, 2))
@@ -41,6 +40,7 @@ const log = (msg: string, obj: any) => {
 
 log("Data1->", data1)
 log("TransformedData1->", transformedData1)
+
 ```
 
 Sample Output:
@@ -124,7 +124,7 @@ TransformedData1-> {
 
 **Example 3:** Using collect method.
 
-```
+```ts
 const mapper1 = SimpleDataMapper.create()
   .collect(["first_name", "last_name"], "fullName1")
   .collect(["first_name", "last_name"], (data: any) => {

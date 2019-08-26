@@ -1,11 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const SimpleDataMapper_1 = require("../SimpleDataMapper");
-const mapper1 = SimpleDataMapper_1.SimpleDataMapper.create()
-    .map("first_name", "firstName")
-    .map("last_name", "lastName")
-    .map("age")
-    .map("addresses[0]", "firstAddress");
 const data1 = {
     first_name: "Evo", last_name: "Zumo", age: 16, gender: "M",
     addresses: [
@@ -23,7 +18,12 @@ const data1 = {
         }
     ]
 };
-const transformedData1 = mapper1.transform(data1);
+const transformedData1 = SimpleDataMapper_1.SimpleDataMapper.create()
+    .map("first_name", "firstName")
+    .map("last_name", "lastName")
+    .map("age")
+    .map("addresses[0]", "firstAddress")
+    .transform(data1);
 const log = (msg, obj) => {
     console.log(msg, JSON.stringify(obj, null, 2));
 };
