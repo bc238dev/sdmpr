@@ -1,13 +1,12 @@
 # Simple Data Mapper
 
-This is a simple data mapper...
-
+Transform any data easily from one shape to another.
 
 ## Here are some examples:
 
-**Example1:** Simple one to one transformation
-```ts
+**Example 1:** Simple one to one transformation
 
+```ts
 import { SimpleDataMapper } from "../SimpleDataMapper"
 
 const mapper1 = SimpleDataMapper.create()
@@ -81,7 +80,7 @@ TransformedData1-> {
 
 ---
 
-**Example2:** Callback demo and nested fields in the output.
+**Example 2:** Callback demo and nested fields in the output.
 
 ```ts
 const data1 = {
@@ -108,7 +107,7 @@ log("TransformedData1->", transformedData1)
 
 ```
 
-Output:
+Sample Output:
 ```
 TransformedData1-> {
   "person": {
@@ -118,6 +117,77 @@ TransformedData1-> {
     "address": {
       "city": "San Diego",
       "zip": "92120"
+    }
+  }
+}
+```
+
+**Example 3:** Using collect method.
+
+```
+const mapper1 = SimpleDataMapper.create()
+  .collect(["first_name", "last_name"], "fullName1")
+  .collect(["first_name", "last_name"], (data: any) => {
+    // You have full control here!
+    return {
+      fullName2: `${data[0]} ${data[1] && data[1].toUpperCase()}`,
+      extra: {
+        info: "Just shows that you can add anything if you like!",
+        now: new Date()
+      }
+    }
+  })
+
+```
+
+Sample Output:
+```
+TransformedData1-> {
+  "fullName1": "Pixie Dorry",
+  "fullName2": "Pixie DORRY",
+  "extra": {
+    "info": "Just shows that you can add anything if you like!",
+    "now": "2019-08-26T06:35:12.397Z"
+  }
+}
+```
+
+**Example 4:** Showing reports.
+```ts
+const mapper1 = SimpleDataMapper.create(true)
+  .map("first_name", "firstName")
+  .map("lasname", "lastName") // <- Wrong field name (for demo)!
+  .map("age")
+  .collect(["first_name", "last_name"], "fullName")
+```
+
+Sample Output:
+```
+TransformedData1-> {
+  "firstName": "Pixie",
+  "age": 3,
+  "fullName": "Pixie Dorry",
+  "__reports__": {
+    "transformation": {
+      "transformed": [
+        "age -> age",
+        "first_name -> firstName"
+      ],
+      "untransformed": [
+        "addresses",
+        "gender",
+        "last_name"
+      ],
+      "skipped": [
+        "lasname"
+      ]
+    },
+    "collection": {
+      "collected": [
+        "first_name",
+        "last_name"
+      ],
+      "uncollected": []
     }
   }
 }
