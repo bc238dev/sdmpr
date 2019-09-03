@@ -1,3 +1,5 @@
+import { CaseStyle, ICaseStyleOptions } from "./CaseStyle";
+
 /**
  * Simple Data Mapper
  *
@@ -9,6 +11,8 @@ export class SimpleDataMapper {
   private maps: { from: string, to: string, cb?: Function }[] = []
   private collects: { fields: string[], to?: string | Function, cb?: Function }[] = []
   private extras: { fieldName: string, data: any }[] = []
+  private caseStyle = CaseStyle.ASIS
+  private caseStyleOptions: ICaseStyleOptions | undefined
 
   constructor(reportEnabled = false) {
     this.init(reportEnabled)
@@ -137,6 +141,17 @@ export class SimpleDataMapper {
       transformedData = { ...transformedData, ...extraData }
     })
 
+    if (this.caseStyle != CaseStyle.ASIS) {
+      // If transformedData is empty (no mapping applied) then use the srcData here directly!
+      if (Object.keys(transformedData).length === 0) {
+        transformedData = { ...srcData }
+      }
+
+      transformedData = this.caseStyle === CaseStyle.CAMEL ?
+        this.changeCase(transformedData, { camel: true }) :
+        this.changeCase(transformedData)
+    }
+
     // Show report if enabled
     if (this.reportEnabled) {
       const dataKeys = Object.keys(srcData)
@@ -183,6 +198,36 @@ export class SimpleDataMapper {
     return this
   }
 
+  mapToCamelCase(options?: ICaseStyleOptions) {
+    this.caseStyle = CaseStyle.CAMEL
+    this.caseStyleOptions = options
+    return this
+  }
+
+  mapToSnakeCase(options?: ICaseStyleOptions) {
+    this.caseStyle = CaseStyle.SNAKE
+    this.caseStyleOptions = options
+    return this
+  }
+
+  static changeCase(obj: any, caseStyle: CaseStyle, options?: ICaseStyleOptions) {
+    const mapper = SimpleDataMapper.create()
+
+    switch (caseStyle) {
+      case CaseStyle.CAMEL:
+        mapper.mapToCamelCase(options)
+        break
+
+      case CaseStyle.SNAKE:
+        mapper.mapToSnakeCase(options)
+        break
+
+      default:
+        return obj
+    }
+
+    return mapper.transform(obj)
+  }
 
   // --- Private Methods ---
 
@@ -191,6 +236,72 @@ export class SimpleDataMapper {
     this.maps = []
     this.collects = []
     this.extras = []
+    this.caseStyle = CaseStyle.ASIS
     return this
+  }
+
+  private changeCase(obj: any, opts = { camel: false }) {
+    const keep = (str: string) => {
+      if (this.caseStyleOptions) {
+        if (this.caseStyleOptions.keep && this.caseStyleOptions.keep.includes(str))
+          return true
+      }
+      return false
+    }
+    const keepChildNodes = (str: string) => {
+      if (keep(str)) {
+        if (this.caseStyleOptions && this.caseStyleOptions.keepChildNodes) {
+          return true
+        }
+      }
+      return false
+    }
+    const toCamelCase = (str: string) => {
+      if (keep(str)) return str
+
+      return str.replace(/([-_][a-z])/ig, ($1) => {
+        return $1.toUpperCase()
+          .replace("-", "")
+          .replace("_", "")
+      })
+    }
+    const toSnakeCase = (str: string) => {
+      if (keep(str)) return str
+
+      return str.split(/(?=[A-Z])/).join("_").toLowerCase()
+    }
+    const startProcess = (obj: any, opts: any): any => {
+      if (typeof obj !== "object") return obj
+
+      const changeNameStyle = opts.camel ? toCamelCase : toSnakeCase
+      const fieldNames = Object.keys(obj)
+
+      return fieldNames
+        .map(fieldName => {
+          const val = obj[fieldName]
+
+          if (!keepChildNodes(fieldName)) {
+            if (Array.isArray(val)) {
+              return {
+                [changeNameStyle(fieldName)]: val.map(item => {
+                  return startProcess(item, opts)
+                })
+              }
+            }
+            else if (typeof val === "object") {
+              return { [changeNameStyle(fieldName)]: startProcess(val, opts) }
+            }
+          }
+
+          return { [changeNameStyle(fieldName)]: val }
+        })
+        .reduce((acc, cur) => {
+          const key = Object.keys(cur)[0]
+          acc[key] = cur[key]
+          return acc
+        }, {})
+    }
+
+    return startProcess(obj, opts)
   }
 }

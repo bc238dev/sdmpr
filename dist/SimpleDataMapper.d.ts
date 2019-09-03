@@ -1,3 +1,4 @@
+import { CaseStyle, ICaseStyleOptions } from "./CaseStyle";
 /**
  * Simple Data Mapper
  *
@@ -9,6 +10,8 @@ export declare class SimpleDataMapper {
     private maps;
     private collects;
     private extras;
+    private caseStyle;
+    private caseStyleOptions;
     constructor(reportEnabled?: boolean);
     static create(reportEnabled?: boolean): SimpleDataMapper;
     map(from: string, to?: string, cb?: Function): this;
@@ -22,5 +25,9 @@ export declare class SimpleDataMapper {
     transform(srcData: any): any;
     reset(): this;
     report(enabled: boolean): this;
+    mapToCamelCase(options?: ICaseStyleOptions): this;
+    mapToSnakeCase(options?: ICaseStyleOptions): this;
+    static changeCase(obj: any, caseStyle: CaseStyle, options?: ICaseStyleOptions): any;
     private init;
+    private changeCase;
 }
