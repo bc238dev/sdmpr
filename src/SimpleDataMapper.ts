@@ -148,8 +148,8 @@ export class SimpleDataMapper {
       }
 
       transformedData = this.caseStyle === CaseStyle.CAMEL ?
-        this.changeCase(transformedData, { camel: true }) :
-        this.changeCase(transformedData)
+        this.doChangeCase(transformedData, { camel: true }) :
+        this.doChangeCase(transformedData)
     }
 
     // Show report if enabled
@@ -240,7 +240,7 @@ export class SimpleDataMapper {
     return this
   }
 
-  private changeCase(obj: any, opts = { camel: false }) {
+  private doChangeCase(obj: any, opts = { camel: false }) {
     const keep = (str: string) => {
       if (this.caseStyleOptions) {
         if (this.caseStyleOptions.keep && this.caseStyleOptions.keep.includes(str))

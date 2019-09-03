@@ -29,5 +29,5 @@ export declare class SimpleDataMapper {
     mapToSnakeCase(options?: ICaseStyleOptions): this;
     static changeCase(obj: any, caseStyle: CaseStyle, options?: ICaseStyleOptions): any;
     private init;
-    private changeCase;
+    private doChangeCase;
 }

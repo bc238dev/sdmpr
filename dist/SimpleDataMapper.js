@@ -131,8 +131,8 @@ class SimpleDataMapper {
                 transformedData = Object.assign({}, srcData);
             }
             transformedData = this.caseStyle === CaseStyle_1.CaseStyle.CAMEL ?
-                this.changeCase(transformedData, { camel: true }) :
-                this.changeCase(transformedData);
+                this.doChangeCase(transformedData, { camel: true }) :
+                this.doChangeCase(transformedData);
         }
         // Show report if enabled
         if (this.reportEnabled) {
@@ -206,7 +206,7 @@ class SimpleDataMapper {
         this.caseStyle = CaseStyle_1.CaseStyle.ASIS;
         return this;
     }
-    changeCase(obj, opts = { camel: false }) {
+    doChangeCase(obj, opts = { camel: false }) {
         const keep = (str) => {
             if (this.caseStyleOptions) {
                 if (this.caseStyleOptions.keep && this.caseStyleOptions.keep.includes(str))
