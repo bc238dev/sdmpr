@@ -1,8 +1,8 @@
 {
   "name": "sdmpr",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Simple Data Mapper",
-  "main": "./dist/SimpleDataMapper.js",
+  "main": "./dist/index.js",
   "scripts": {
     "test": "npx mocha -r ts-node/register test/**/*"
   },
