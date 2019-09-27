@@ -229,13 +229,13 @@ export class SimpleDataMapper {
     return mapper.transform(obj)
   }
 
-  static toCamelCase(obj: any, options?: ICaseStyleOptions): any {
+  static camelCase(obj: any, options?: ICaseStyleOptions) {
     const mapper = SimpleDataMapper.create()
 
     return mapper.mapToCamelCase(options).transform(obj)
   }
 
-  static toSnakeCase(obj: any, options?: ICaseStyleOptions): any {
+  static snakeCase(obj: any, options?: ICaseStyleOptions) {
     const mapper = SimpleDataMapper.create()
 
     return mapper.mapToSnakeCase(options).transform(obj)

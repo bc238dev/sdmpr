@@ -21,7 +21,7 @@ import { SimpleDataMapper } from "sdmpr"
 Easiest Usage:
 
 const d1 = { first_name: "Pixie", last_name: "Dorry", address: { city: "SD", postal_code: "92101" }}
-const d2 = SimpleDataMapper.toCamelCase(d1)
+const d2 = SimpleDataMapper.camelCase(d1)
 
   // d2-> { firstName: 'Pixie', lastName: 'Dorry', address: { city: 'SD', postalCode: '92101' }}
 
