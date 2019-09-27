@@ -28,6 +28,8 @@ export declare class SimpleDataMapper {
     mapToCamelCase(options?: ICaseStyleOptions): this;
     mapToSnakeCase(options?: ICaseStyleOptions): this;
     static changeCase(obj: any, caseStyle: CaseStyle, options?: ICaseStyleOptions): any;
+    static toCamelCase(obj: any, options?: ICaseStyleOptions): any;
+    static toSnakeCase(obj: any, options?: ICaseStyleOptions): any;
     private init;
     private doChangeCase;
 }

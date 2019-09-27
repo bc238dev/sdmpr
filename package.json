@@ -1,9 +1,11 @@
 {
   "name": "sdmpr",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "description": "Simple Data Mapper",
   "main": "./dist/index.js",
   "scripts": {
+    "build": "tsc",
+    "publish": "npm run build && git push && npm publish",
     "test": "npx mocha -r ts-node/register test/**/*"
   },
   "repository": {

@@ -197,6 +197,14 @@ class SimpleDataMapper {
         }
         return mapper.transform(obj);
     }
+    static toCamelCase(obj, options) {
+        const mapper = SimpleDataMapper.create();
+        return mapper.mapToCamelCase(options).transform(obj);
+    }
+    static toSnakeCase(obj, options) {
+        const mapper = SimpleDataMapper.create();
+        return mapper.mapToSnakeCase(options).transform(obj);
+    }
     // --- Private Methods ---
     init(reportEnabled = false) {
         this.reportEnabled = reportEnabled;
