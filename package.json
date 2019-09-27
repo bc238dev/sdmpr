@@ -5,7 +5,7 @@
   "main": "./dist/index.js",
   "scripts": {
     "build": "tsc",
-    "publish": "npm run build && git push && npm publish",
+    "xpublish": "npm run build && git push && npm publish",
     "test": "npx mocha -r ts-node/register test/**/*"
   },
   "repository": {
