@@ -229,6 +229,14 @@ export class SimpleDataMapper {
     return mapper.transform(obj)
   }
 
+  static toCamelCase(obj: any, options?: ICaseStyleOptions) {
+    return SimpleDataMapper.create().mapToCamelCase(options).transform(obj)
+  }
+
+  static toSnakeCase(obj: any, options?: ICaseStyleOptions) {
+    return SimpleDataMapper.create().mapToSnakeCase(options).transform(obj)
+  }
+
   // --- Private Methods ---
 
   private init(reportEnabled = false) {

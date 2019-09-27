@@ -55,4 +55,22 @@ describe('SimpleDataMapper', () => {
     expect(data2.last_name).to.equal("Zumo")
     expect(data2.age).to.equal(16)
   })
+
+  it("Should map to CamelCase in one step", () => {
+    const data1 = { first_name: "Evo", last_name: "Zumo", age: 16 }
+    const data2 = SimpleDataMapper.toCamelCase(data1)
+
+    expect(data2.firstName).to.equal("Evo")
+    expect(data2.lastName).to.equal("Zumo")
+    expect(data2.age).to.equal(16)
+  })
+
+  it("Should map to SnakeCase in one step", () => {
+    const data1 = { firstName: "Evo", lastName: "Zumo", age: 16 }
+    const data2 = SimpleDataMapper.toSnakeCase(data1)
+
+    expect(data2.first_name).to.equal("Evo")
+    expect(data2.last_name).to.equal("Zumo")
+    expect(data2.age).to.equal(16)
+  })
 })
