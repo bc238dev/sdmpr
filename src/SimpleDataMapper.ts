@@ -229,12 +229,16 @@ export class SimpleDataMapper {
     return mapper.transform(obj)
   }
 
-  static toCamelCase(obj: any, options?: ICaseStyleOptions) {
-    return SimpleDataMapper.create().mapToCamelCase(options).transform(obj)
+  static toCamelCase(obj: any, options?: ICaseStyleOptions): any {
+    const mapper = SimpleDataMapper.create()
+
+    return mapper.mapToCamelCase(options).transform(obj)
   }
 
-  static toSnakeCase(obj: any, options?: ICaseStyleOptions) {
-    return SimpleDataMapper.create().mapToSnakeCase(options).transform(obj)
+  static toSnakeCase(obj: any, options?: ICaseStyleOptions): any {
+    const mapper = SimpleDataMapper.create()
+
+    return mapper.mapToSnakeCase(options).transform(obj)
   }
 
   // --- Private Methods ---
