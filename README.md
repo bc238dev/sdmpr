@@ -20,10 +20,45 @@ import { SimpleDataMapper } from "sdmpr"
 
 Easiest Usage:
 
-const d1 = { first_name: "Pixie", last_name: "Dorry", address: { city: "SD", postal_code: "92101" }}
+const d1 = { first_name: "Pixie", lastName: "Dorry", address: { cityName: "SD", postalcode: "92101" } }
 const d2 = SimpleDataMapper.toCamelCase(d1)
+const d3 = SimpleDataMapper.toSnakeCase(d1)
+const d4 = SimpleDataMapper.toLowerCase(d1)
+const d5 = SimpleDataMapper.toUpperCase(d1)
 
-  // d2-> { firstName: 'Pixie', lastName: 'Dorry', address: { city: 'SD', postalCode: '92101' }}
+console.log("Original->", d1)
+console.log("Camel Case->", d2)
+console.log("Snake Case->", d3)
+console.log("Lower Case->", d4)
+console.log("Upper Case->", d5)
+
+Output:
+
+Original-> {
+  first_name: 'Pixie',
+  lastName: 'Dorry',
+  address: { cityName: 'SD', postalcode: '92101' }
+}
+Camel Case-> {
+  firstName: 'Pixie',
+  lastName: 'Dorry',
+  address: { cityName: 'SD', postalcode: '92101' }
+}
+Snake Case-> {
+  first_name: 'Pixie',
+  last_name: 'Dorry',
+  address: { city_name: 'SD', postalcode: '92101' }
+}
+Lower Case-> {
+  first_name: 'Pixie',
+  lastname: 'Dorry',
+  address: { cityname: 'SD', postalcode: '92101' }
+}
+Upper Case-> {
+  FIRST_NAME: 'Pixie',
+  LASTNAME: 'Dorry',
+  ADDRESS: { CITYNAME: 'SD', POSTALCODE: '92101' }
+}
 
 ```
 

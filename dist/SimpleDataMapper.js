@@ -111,7 +111,7 @@ class SimpleDataMapper {
                     targetData.target[targetData.lastFieldName] = info;
                 }
                 else {
-                    transformedData = Object.assign(Object.assign({}, transformedData), info);
+                    transformedData = Object.assign({}, transformedData, info);
                 }
             }
         });
@@ -119,7 +119,7 @@ class SimpleDataMapper {
         this.extras.forEach(extra => {
             let extraData = {};
             extraData[extra.fieldName] = extra.data;
-            transformedData = Object.assign(Object.assign({}, transformedData), extraData);
+            transformedData = Object.assign({}, transformedData, extraData);
         });
         if (this.caseStyle != CaseStyle_1.CaseStyle.ASIS) {
             // If transformedData is empty (no mapping applied) then use the srcData here directly!
