@@ -1,5 +1,7 @@
 import { expect } from "chai"
+import { ICaseStyleOptions } from "./../src/CaseStyle";
 import { SimpleDataMapper } from "../src/SimpleDataMapper"
+import { CaseStyle } from "../src/CaseStyle"
 
 
 describe('SimpleDataMapper', () => {
@@ -71,6 +73,46 @@ describe('SimpleDataMapper', () => {
 
     expect(data2.first_name).to.equal("Evo")
     expect(data2.last_name).to.equal("Zumo")
+    expect(data2.age).to.equal(16)
+  })
+
+  it("Should map to all lower case in one step", () => {
+    const data1 = { firstName: "Evo", lastName: "Zumo", age: 16, address: { streetName: "Main Str" } }
+    const data2 = SimpleDataMapper.toLowerCase(data1)
+
+    expect(data2.firstname).to.equal("Evo")
+    expect(data2.lastname).to.equal("Zumo")
+    expect(data2.address.streetname).to.equal("Main Str")
+    expect(data2.age).to.equal(16)
+  })
+
+  it("Should map to all upper case in one step", () => {
+    const data1 = { firstName: "Evo", lastName: "Zumo", age: 16, address: { streetName: "Main Str" } }
+    const data2 = SimpleDataMapper.toUpperCase(data1)
+
+    expect(data2.FIRSTNAME).to.equal("Evo")
+    expect(data2.LASTNAME).to.equal("Zumo")
+    expect(data2.ADDRESS.STREETNAME).to.equal("Main Str")
+    expect(data2.AGE).to.equal(16)
+  })
+
+  it("Should map to snake case using changeCase", () => {
+    const data1 = { firstName: "Evo", lastName: "Zumo", age: 16, address: { streetName: "Main Str" } }
+    const data2 = SimpleDataMapper.changeCase(data1, CaseStyle.SNAKE)
+
+    expect(data2.first_name).to.equal("Evo")
+    expect(data2.last_name).to.equal("Zumo")
+    expect(data2.address.street_name).to.equal("Main Str")
+    expect(data2.age).to.equal(16)
+  })
+
+  it("Should map to camel case using changeCase with options", () => {
+    const data1 = { first_name: "Evo", last_name: "Zumo", age: 16, main_address: { street_name: "Main Str" } }
+    const data2 = SimpleDataMapper.changeCase(data1, CaseStyle.CAMEL, { keep: ["main_address"], keepChildNodes: true })
+
+    expect(data2.firstName).to.equal("Evo")
+    expect(data2.lastName).to.equal("Zumo")
+    expect(data2.main_address.street_name).to.equal("Main Str")
     expect(data2.age).to.equal(16)
   })
 })

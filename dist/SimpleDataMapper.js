@@ -16,9 +16,6 @@ class SimpleDataMapper {
         this.caseStyle = CaseStyle_1.CaseStyle.ASIS;
         this.init(reportEnabled);
     }
-    static create(reportEnabled = false) {
-        return new SimpleDataMapper(reportEnabled);
-    }
     map(from, to, cb) {
         to = to ? to : from;
         this.maps.push({ from, to, cb });
@@ -110,12 +107,11 @@ class SimpleDataMapper {
             const info = cb ? cb(vals) : vals.join(" ");
             if (info) {
                 if (to && typeof to === "string") {
-                    // transformedData[to] = info
                     const targetData = getTargetData(transformedData, to);
                     targetData.target[targetData.lastFieldName] = info;
                 }
                 else {
-                    transformedData = Object.assign({}, transformedData, info);
+                    transformedData = Object.assign(Object.assign({}, transformedData), info);
                 }
             }
         });
@@ -123,16 +119,14 @@ class SimpleDataMapper {
         this.extras.forEach(extra => {
             let extraData = {};
             extraData[extra.fieldName] = extra.data;
-            transformedData = Object.assign({}, transformedData, extraData);
+            transformedData = Object.assign(Object.assign({}, transformedData), extraData);
         });
         if (this.caseStyle != CaseStyle_1.CaseStyle.ASIS) {
             // If transformedData is empty (no mapping applied) then use the srcData here directly!
             if (Object.keys(transformedData).length === 0) {
                 transformedData = Object.assign({}, srcData);
             }
-            transformedData = this.caseStyle === CaseStyle_1.CaseStyle.CAMEL ?
-                this.doChangeCase(transformedData, { camel: true }) :
-                this.doChangeCase(transformedData);
+            transformedData = this.doChangeCase(transformedData, this.caseStyle);
         }
         // Show report if enabled
         if (this.reportEnabled) {
@@ -183,27 +177,37 @@ class SimpleDataMapper {
         this.caseStyleOptions = options;
         return this;
     }
+    mapToLowerCase(options) {
+        this.caseStyle = CaseStyle_1.CaseStyle.LOWER;
+        this.caseStyleOptions = options;
+        return this;
+    }
+    mapToUpperCase(options) {
+        this.caseStyle = CaseStyle_1.CaseStyle.UPPER;
+        this.caseStyleOptions = options;
+        return this;
+    }
+    // --- Static Methods ---
+    static create(reportEnabled = false) {
+        return new SimpleDataMapper(reportEnabled);
+    }
     static changeCase(obj, caseStyle, options) {
         const mapper = SimpleDataMapper.create();
-        switch (caseStyle) {
-            case CaseStyle_1.CaseStyle.CAMEL:
-                mapper.mapToCamelCase(options);
-                break;
-            case CaseStyle_1.CaseStyle.SNAKE:
-                mapper.mapToSnakeCase(options);
-                break;
-            default:
-                return obj;
-        }
+        mapper.caseStyle = caseStyle;
+        mapper.caseStyleOptions = options;
         return mapper.transform(obj);
     }
     static toCamelCase(obj, options) {
-        const mapper = SimpleDataMapper.create();
-        return mapper.mapToCamelCase(options).transform(obj);
+        return SimpleDataMapper.create().mapToCamelCase(options).transform(obj);
     }
     static toSnakeCase(obj, options) {
-        const mapper = SimpleDataMapper.create();
-        return mapper.mapToSnakeCase(options).transform(obj);
+        return SimpleDataMapper.create().mapToSnakeCase(options).transform(obj);
+    }
+    static toLowerCase(obj, options) {
+        return SimpleDataMapper.create().mapToLowerCase(options).transform(obj);
+    }
+    static toUpperCase(obj, options) {
+        return SimpleDataMapper.create().mapToUpperCase(options).transform(obj);
     }
     // --- Private Methods ---
     init(reportEnabled = false) {
@@ -214,7 +218,7 @@ class SimpleDataMapper {
         this.caseStyle = CaseStyle_1.CaseStyle.ASIS;
         return this;
     }
-    doChangeCase(obj, opts = { camel: false }) {
+    doChangeCase(obj, caseStyle) {
         const keep = (str) => {
             if (this.caseStyleOptions) {
                 if (this.caseStyleOptions.keep && this.caseStyleOptions.keep.includes(str))
@@ -244,10 +248,42 @@ class SimpleDataMapper {
                 return str;
             return str.split(/(?=[A-Z])/).join("_").toLowerCase();
         };
-        const startProcess = (obj, opts) => {
+        const toLowerCase = (str) => {
+            if (keep(str))
+                return str;
+            return str.toLowerCase();
+        };
+        const toUpperCase = (str) => {
+            if (keep(str))
+                return str;
+            return str.toUpperCase();
+        };
+        const getBaseFunction = (caseStyle) => {
+            let fn;
+            switch (caseStyle) {
+                case CaseStyle_1.CaseStyle.CAMEL:
+                    fn = toCamelCase;
+                    break;
+                case CaseStyle_1.CaseStyle.SNAKE:
+                    fn = toSnakeCase;
+                    break;
+                case CaseStyle_1.CaseStyle.LOWER:
+                    fn = toLowerCase;
+                    break;
+                case CaseStyle_1.CaseStyle.UPPER:
+                    fn = toUpperCase;
+                    break;
+                default:
+                    break;
+            }
+            return fn;
+        };
+        const startProcess = (obj, caseStyle) => {
             if (typeof obj !== "object")
                 return obj;
-            const changeNameStyle = opts.camel ? toCamelCase : toSnakeCase;
+            const baseFunction = getBaseFunction(caseStyle);
+            if (!baseFunction)
+                return;
             const fieldNames = Object.keys(obj);
             return fieldNames
                 .map(fieldName => {
@@ -255,16 +291,16 @@ class SimpleDataMapper {
                 if (!keepChildNodes(fieldName)) {
                     if (Array.isArray(val)) {
                         return {
-                            [changeNameStyle(fieldName)]: val.map(item => {
-                                return startProcess(item, opts);
+                            [baseFunction(fieldName)]: val.map(item => {
+                                return startProcess(item, caseStyle);
                             })
                         };
                     }
                     else if (typeof val === "object") {
-                        return { [changeNameStyle(fieldName)]: startProcess(val, opts) };
+                        return { [baseFunction(fieldName)]: startProcess(val, caseStyle) };
                     }
                 }
-                return { [changeNameStyle(fieldName)]: val };
+                return { [baseFunction(fieldName)]: val };
             })
                 .reduce((acc, cur) => {
                 const key = Object.keys(cur)[0];
@@ -272,7 +308,7 @@ class SimpleDataMapper {
                 return acc;
             }, {});
         };
-        return startProcess(obj, opts);
+        return startProcess(obj, caseStyle);
     }
 }
 exports.SimpleDataMapper = SimpleDataMapper;

@@ -13,7 +13,6 @@ export declare class SimpleDataMapper {
     private caseStyle;
     private caseStyleOptions;
     constructor(reportEnabled?: boolean);
-    static create(reportEnabled?: boolean): SimpleDataMapper;
     map(from: string, to?: string, cb?: Function): this;
     collect(fields: string[], to?: string | Function, cb?: Function): this;
     add(fieldName: string, data: any): this;
@@ -27,9 +26,14 @@ export declare class SimpleDataMapper {
     report(enabled: boolean): this;
     mapToCamelCase(options?: ICaseStyleOptions): this;
     mapToSnakeCase(options?: ICaseStyleOptions): this;
+    mapToLowerCase(options?: ICaseStyleOptions): this;
+    mapToUpperCase(options?: ICaseStyleOptions): this;
+    static create(reportEnabled?: boolean): SimpleDataMapper;
     static changeCase(obj: any, caseStyle: CaseStyle, options?: ICaseStyleOptions): any;
     static toCamelCase(obj: any, options?: ICaseStyleOptions): any;
     static toSnakeCase(obj: any, options?: ICaseStyleOptions): any;
+    static toLowerCase(obj: any, options?: ICaseStyleOptions): any;
+    static toUpperCase(obj: any, options?: ICaseStyleOptions): any;
     private init;
     private doChangeCase;
 }

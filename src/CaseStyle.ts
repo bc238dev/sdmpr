@@ -1,7 +1,9 @@
 export enum CaseStyle {
   ASIS,
   CAMEL,
-  SNAKE
+  SNAKE,
+  LOWER,
+  UPPER
 }
 
 export interface ICaseStyleOptions {

@@ -18,10 +18,6 @@ export class SimpleDataMapper {
     this.init(reportEnabled)
   }
 
-  static create(reportEnabled = false) {
-    return new SimpleDataMapper(reportEnabled)
-  }
-
   map(from: string, to?: string, cb?: Function) {
     to = to ? to : from
     this.maps.push({ from, to, cb })
@@ -124,7 +120,6 @@ export class SimpleDataMapper {
       const info = cb ? cb(vals) : vals.join(" ")
       if (info) {
         if (to && typeof to === "string") {
-          // transformedData[to] = info
           const targetData = getTargetData(transformedData, to)
           targetData.target[targetData.lastFieldName] = info
         }
@@ -147,9 +142,7 @@ export class SimpleDataMapper {
         transformedData = { ...srcData }
       }
 
-      transformedData = this.caseStyle === CaseStyle.CAMEL ?
-        this.doChangeCase(transformedData, { camel: true }) :
-        this.doChangeCase(transformedData)
+      transformedData = this.doChangeCase(transformedData, this.caseStyle)
     }
 
     // Show report if enabled
@@ -210,35 +203,46 @@ export class SimpleDataMapper {
     return this
   }
 
+  mapToLowerCase(options?: ICaseStyleOptions) {
+    this.caseStyle = CaseStyle.LOWER
+    this.caseStyleOptions = options
+    return this
+  }
+
+  mapToUpperCase(options?: ICaseStyleOptions) {
+    this.caseStyle = CaseStyle.UPPER
+    this.caseStyleOptions = options
+    return this
+  }
+
+  // --- Static Methods ---
+
+  static create(reportEnabled = false) {
+    return new SimpleDataMapper(reportEnabled)
+  }
+
   static changeCase(obj: any, caseStyle: CaseStyle, options?: ICaseStyleOptions) {
     const mapper = SimpleDataMapper.create()
-
-    switch (caseStyle) {
-      case CaseStyle.CAMEL:
-        mapper.mapToCamelCase(options)
-        break
-
-      case CaseStyle.SNAKE:
-        mapper.mapToSnakeCase(options)
-        break
-
-      default:
-        return obj
-    }
+    mapper.caseStyle = caseStyle
+    mapper.caseStyleOptions = options
 
     return mapper.transform(obj)
   }
 
   static toCamelCase(obj: any, options?: ICaseStyleOptions) {
-    const mapper = SimpleDataMapper.create()
-
-    return mapper.mapToCamelCase(options).transform(obj)
+    return SimpleDataMapper.create().mapToCamelCase(options).transform(obj)
   }
 
   static toSnakeCase(obj: any, options?: ICaseStyleOptions) {
-    const mapper = SimpleDataMapper.create()
+    return SimpleDataMapper.create().mapToSnakeCase(options).transform(obj)
+  }
 
-    return mapper.mapToSnakeCase(options).transform(obj)
+  static toLowerCase(obj: any, options?: ICaseStyleOptions) {
+    return SimpleDataMapper.create().mapToLowerCase(options).transform(obj)
+  }
+
+  static toUpperCase(obj: any, options?: ICaseStyleOptions) {
+    return SimpleDataMapper.create().mapToUpperCase(options).transform(obj)
   }
 
   // --- Private Methods ---
@@ -252,7 +256,7 @@ export class SimpleDataMapper {
     return this
   }
 
-  private doChangeCase(obj: any, opts = { camel: false }) {
+  private doChangeCase(obj: any, caseStyle: CaseStyle) {
     const keep = (str: string) => {
       if (this.caseStyleOptions) {
         if (this.caseStyleOptions.keep && this.caseStyleOptions.keep.includes(str))
@@ -282,10 +286,49 @@ export class SimpleDataMapper {
 
       return str.split(/(?=[A-Z])/).join("_").toLowerCase()
     }
-    const startProcess = (obj: any, opts: any): any => {
+    const toLowerCase = (str: string) => {
+      if (keep(str)) return str
+
+      return str.toLowerCase()
+    }
+    const toUpperCase = (str: string) => {
+      if (keep(str)) return str
+
+      return str.toUpperCase()
+    }
+    const getBaseFunction = (caseStyle: CaseStyle) => {
+      let fn
+
+      switch (caseStyle) {
+        case CaseStyle.CAMEL:
+          fn = toCamelCase
+          break;
+
+        case CaseStyle.SNAKE:
+          fn = toSnakeCase
+          break;
+
+        case CaseStyle.LOWER:
+          fn = toLowerCase
+          break;
+
+        case CaseStyle.UPPER:
+          fn = toUpperCase
+          break;
+
+        default:
+          break;
+      }
+
+      return fn
+    }
+    const startProcess = (obj: any, caseStyle: CaseStyle): any => {
       if (typeof obj !== "object") return obj
 
-      const changeNameStyle = opts.camel ? toCamelCase : toSnakeCase
+      const baseFunction = getBaseFunction(caseStyle)
+
+      if (!baseFunction) return
+
       const fieldNames = Object.keys(obj)
 
       return fieldNames
@@ -295,17 +338,17 @@ export class SimpleDataMapper {
           if (!keepChildNodes(fieldName)) {
             if (Array.isArray(val)) {
               return {
-                [changeNameStyle(fieldName)]: val.map(item => {
-                  return startProcess(item, opts)
+                [baseFunction(fieldName)]: val.map(item => {
+                  return startProcess(item, caseStyle)
                 })
               }
             }
             else if (typeof val === "object") {
-              return { [changeNameStyle(fieldName)]: startProcess(val, opts) }
+              return { [baseFunction(fieldName)]: startProcess(val, caseStyle) }
             }
           }
 
-          return { [changeNameStyle(fieldName)]: val }
+          return { [baseFunction(fieldName)]: val }
         })
         .reduce((acc, cur) => {
           const key = Object.keys(cur)[0]
@@ -314,6 +357,6 @@ export class SimpleDataMapper {
         }, {})
     }
 
-    return startProcess(obj, opts)
+    return startProcess(obj, caseStyle)
   }
 }
