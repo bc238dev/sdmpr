@@ -2,9 +2,9 @@ import { expect } from "chai"
 import { ICaseStyleOptions } from "./../src/CaseStyle";
 import { SimpleDataMapper } from "../src/SimpleDataMapper"
 import { CaseStyle } from "../src/CaseStyle"
+import sdmpr from "../src/"
 
-
-describe('SimpleDataMapper', () => {
+describe("SimpleDataMapper", () => {
   it("Should create mapper", () => {
     const mapper1 = SimpleDataMapper.create()
 
@@ -114,5 +114,27 @@ describe('SimpleDataMapper', () => {
     expect(data2.lastName).to.equal("Zumo")
     expect(data2.main_address.street_name).to.equal("Main Str")
     expect(data2.age).to.equal(16)
+  })
+})
+
+describe("sdmpr", () => {
+  it("Should create mapper using sdmpr", () => {
+    const mapper1 = sdmpr.create()
+
+    mapper1.map("hello", "sdmpr")
+
+    const data1 = { hello: "Hello sdmpr" }
+    const data2 = mapper1.transform(data1)
+
+    expect(data2.sdmpr).exist
+    expect(data2.sdmpr).to.equal("Hello sdmpr")
+  })
+
+  it("Should map to camel case using toCamelCase", () => {
+    const data1 = { first_name: "Pixie", last_name: "Dorry", age: 3.14 }
+    const data2 = sdmpr.toCamelCase(data1)
+
+    expect(data2.firstName).to.equal("Pixie")
+    expect(data2.lastName).to.equal("Dorry")
   })
 })

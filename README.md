@@ -16,7 +16,8 @@ or
 
 TS
 import { SimpleDataMapper } from "sdmpr"
-
+or
+import sdmpr from "sdmpr"
 
 Easiest Usage:
 
